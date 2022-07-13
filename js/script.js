@@ -23,7 +23,6 @@ function showSubmenu(event) {
       submenus.forEach(submenu => {
         if (!target.nextElementSibling.contains(submenu)) {
           submenu.classList.remove('active')
-          console.log(!target.nextElementSibling.contains(submenu))
         }
       })
 
