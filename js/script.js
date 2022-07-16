@@ -2,14 +2,14 @@ const navigation = document.querySelector('.navigation')
 const submenus = document.querySelectorAll('.submenu')
 const images = document.querySelectorAll('.navigation__img')
 const btnMobile = document.querySelector('.btn-mobile')
+const events = ['touchstart', 'click']
 
-function showMenuMobile(event) {
+function showMenuMobile() {
   this.nextElementSibling.classList.toggle('active')
 }
 btnMobile.addEventListener('click', showMenuMobile)
 
-function showSubmenu(event) {
-  const target = event.target
+function showSubmenu({ target }) {
 
   // Verificando se o target possui a classe navigation__link
   if (target.classList.contains('navigation__link')) {
@@ -31,13 +31,17 @@ function showSubmenu(event) {
 
       // Despachando o evento de click nas duas imagens
       images.forEach(image => image.dispatchEvent(new Event('click')))
+
+      outsideClick(this, events, () => {
+        target.nextElementSibling.classList.remove('active')
+        images.forEach(image => image.dispatchEvent(new Event('click')))
+      })
     }
   }
 }
 navigation.addEventListener('click', showSubmenu)
 
-function changeArrow(event) {
-  const target = event.target
+function changeArrow({ target }) {
 
   // Verificando se o submenu tem a classe active
   if (target.parentNode.nextElementSibling.classList.contains('active')) {
@@ -51,3 +55,25 @@ function changeArrow(event) {
   }
 }
 images.forEach(image => image.addEventListener('click', changeArrow))
+
+function outsideClick(element, events, callback) {
+  const html = document.documentElement
+  const outside = 'data-outside'
+
+  if (!element.hasAttribute(outside)) {
+    events.forEach(userEvent => {
+      html.addEventListener(userEvent, handleOutsideClick)
+    })
+    element.setAttribute(outside, '')
+  }
+
+  function handleOutsideClick({ target }) {
+    if (!element.contains(target)) {
+      events.forEach(userEvent => {
+        html.removeEventListener(userEvent, handleOutsideClick)
+      })
+      element.removeAttribute(outside)
+      callback()
+    }
+  }
+}
