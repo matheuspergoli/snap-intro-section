@@ -6,10 +6,6 @@ const events = ['touchstart', 'click']
 
 function showMenuMobile() {
   this.nextElementSibling.classList.toggle('active')
-
-  outsideClick(this, events, () => {
-    this.nextElementSibling.classList.remove('active')
-  })
 }
 btnMobile.addEventListener('click', showMenuMobile)
 
